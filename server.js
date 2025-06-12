@@ -24,8 +24,6 @@ const connectDB = async () => {
   try {
     console.log("🌍 Connecting to MongoDB Atlas...");
     await mongoose.connect(process.env.MONGO_POSTURL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
     console.log("✅ Connected to MongoDB Atlas");
   } catch (error) {
