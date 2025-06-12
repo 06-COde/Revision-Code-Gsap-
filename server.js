@@ -1,28 +1,42 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(express.json());
+// Middleware
+app.use(cors()); // Optional: Allow cross-origin requests
+app.use(express.json()); // Parse JSON requests
 
-// MongoDB Connection
+// Debug log to confirm environment variable
+if (!process.env.MONGO_POSTURL) {
+  console.error("❌ MONGO_POSTURL not set in environment variables.");
+  process.exit(1);
+}
+
+// MongoDB connection
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/myDatabase", {
+    console.log("🌍 Connecting to MongoDB Atlas...");
+    await mongoose.connect(process.env.MONGO_POSTURL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log("✅ Connected to MongoDB");
+    console.log("✅ Connected to MongoDB Atlas");
   } catch (error) {
-    console.error("❌ MongoDB connection error:", error);
+    console.error("❌ MongoDB connection failed:", error.message);
     process.exit(1);
   }
 };
 
 connectDB();
 
-// Mongoose Schema
+// Schema and Model
 const LabelSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -34,6 +48,7 @@ const LabelSchema = new mongoose.Schema({
   },
   salary: {
     type: Number,
+    default: 0,
   },
   revenue: {
     type: Number,
@@ -43,7 +58,9 @@ const LabelSchema = new mongoose.Schema({
 
 const Label = mongoose.model("Label", LabelSchema);
 
-// POST route
+// Routes
+
+// POST - Create a new label
 app.post('/', async (req, res) => {
   try {
     const data = req.body;
@@ -51,22 +68,23 @@ app.post('/', async (req, res) => {
     const savedLabel = await newLabel.save();
     res.status(201).json(savedLabel);
   } catch (err) {
-    console.log("We got some error", err);
-    res.status(404).json(err);
+    console.error("❌ Error saving label:", err.message);
+    res.status(500).json({ error: "Failed to save label" });
   }
 });
 
-// GET route
+// GET - Fetch all labels
 app.get('/', async (req, res) => {
   try {
     const labels = await Label.find();
-    res.json(labels);
+    res.status(200).json(labels);
   } catch (err) {
-    console.log("We got some error", err);
-    res.status(500).json(err);
+    console.error("❌ Error fetching labels:", err.message);
+    res.status(500).json({ error: "Failed to fetch labels" });
   }
 });
 
+// Server start
 app.listen(PORT, () => {
-  console.log(`server is running on ${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

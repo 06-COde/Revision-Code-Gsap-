@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useDispatch, useSelector } from 'react-redux';
 import { togglePageButton } from '../utils/toggleSlice';
+import Graph from './Graph';
 
 function Home() {
   const [xValue, setXvalue] = useState(0);
@@ -42,10 +43,11 @@ const togglePage = useSelector((state) => state.togglebtn.togglePage);
           <li>Login</li>
           </ul>
         </div>
+        <button onClick={toggleB} className='p-4 m-5 rounded-lg translate-x-1 transform hover:transition duration-300 font-bold bg-slate-700 hover:bg-gray-500 text-white'>
+          TogglePage
+        </button>
     </nav>
-    <button onClick={toggleB} className='p-4 m-5 rounded-lg translate-x-1 transform hover:transition duration-300 font-bold bg-slate-700 hover:bg-gray-500 text-white'>
-      TogglePage
-    </button>
+
    { togglePage && <main className='absolute '>
       <button
         className="h-20 w-44 m-10 rounded-lg bg-green-400 text-black font-bold"
@@ -68,6 +70,7 @@ const togglePage = useSelector((state) => state.togglebtn.togglePage);
         alt="fly"
       />
     </main>}
+    <Graph/>
     </>
   );
 }
