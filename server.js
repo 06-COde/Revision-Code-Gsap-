@@ -7,11 +7,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
 if (!process.env.MONGO_POSTURL) {
   console.error("❌ MONGO_POSTURL not set in environment variables.");
   process.exit(1);
@@ -20,7 +18,7 @@ if (!process.env.MONGO_POSTURL) {
 const connectDB = async () => {
   try {
     console.log("🌍 Connecting to MongoDB Atlas...");
-    await mongoose.connect(process.env.MONGO_POSTURL);
+    await mongoose.connect(process.env.MONGO_POSTURL); // Cleaned
     console.log("✅ Connected to MongoDB Atlas");
   } catch (error) {
     console.error("❌ MongoDB connection failed:", error.message);
@@ -30,7 +28,6 @@ const connectDB = async () => {
 
 connectDB();
 
-// Mongoose Schema
 const LabelSchema = new mongoose.Schema({
   name: { type: String, required: true },
   company: { type: String, required: true },
@@ -40,7 +37,6 @@ const LabelSchema = new mongoose.Schema({
 
 const Label = mongoose.model("Label", LabelSchema);
 
-// Routes
 app.post('/', async (req, res) => {
   try {
     const newLabel = new Label(req.body);
@@ -62,7 +58,6 @@ app.get('/', async (req, res) => {
   }
 });
 
-// Start server
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server is live on port ${PORT}`);
 });
