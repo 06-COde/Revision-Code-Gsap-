@@ -1,0 +1,1 @@
+export const accordian_Data_Api = 'https://opentdb.com/api.php?amount=10&category=18';
